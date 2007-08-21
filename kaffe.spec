@@ -117,7 +117,7 @@ Requires:	jikes
 Requires:	ecj
 %endif
 Requires:	%{origin} = %{epoch}:%{originver}-%{release}
-Requires:	/usr/sbin/update-alternatives
+Requires:	update-alternatives
 Provides:	java-sdk-%{javaver}-%{origin} = %{epoch}:%{javaversion}-%{release}
 Provides:	java-sdk-%{origin} = %{epoch}:%{javaversion}-%{release}
 Provides:	java-sdk-%{javaver}, java-sdk = %{epoch}:%{javaver}
