@@ -173,7 +173,8 @@ export LIBS="$LIBS `pkg-config --libs pangoft2`"
            --with-qt-binaries=%{_prefix}/lib/qt3/bin \
            --with-qtdir=%{_prefix}/lib/qt3 \
 	   --with-jni-library-path=%{_jnidir} \
-	   --with-extensions=comm,microsoft,pjava
+	   --with-extensions=comm,microsoft,pjava \
+	   --disable-Werror
 %make JAVAC="ecj -1.5"
 
 %check
@@ -210,6 +211,10 @@ pushd %{buildroot}%{kaffedir}/jre/lib
 rm -f glibj.zip
 ln -s %{_datadir}/classpath/glibj.zip
 popd
+
+# keytool is in sun jre, putting it in javac alternative link group would mess
+# up other packages
+mv %{_jvmdir}/%{sdkdir}/bin/gkeytool %{_jvmdir}/%{jredir}/bin/gkeytool
 
 # extensions handling
 install -d -m 755 %{buildroot}%{jvmjardir}
@@ -248,7 +253,8 @@ popd
 update-alternatives --install %{_bindir}/java java %{jrebindir}/java %{priority} \
 --slave %{_jvmdir}/jre                     jre                         %{_jvmdir}/%{jrelnk} \
 --slave %{_jvmjardir}/jre                  jre_exports                 %{_jvmjardir}/%{jrelnk} \
---slave %{_bindir}/rmiregistry             rmiregistry                 %{jrebindir}/rmiregistry
+--slave %{_bindir}/rmiregistry             rmiregistry                 %{jrebindir}/rmiregistry \
+--slave %{_bindir}/keytool                 keytool                     %{jrebindir}/gkeytool
 
 update-alternatives --install %{_jvmdir}/jre-%{origin} jre_%{origin} %{_jvmdir}/%{jrelnk} %{priority} \
 --slave %{_jvmjardir}/jre-%{origin}        jre_%{origin}_exports     %{_jvmjardir}/%{jrelnk}
@@ -267,7 +273,6 @@ update-alternatives --install %{_bindir}/javac javac %{sdkbindir}/javac %{priori
 --slave %{_bindir}/javah                    javah                       %{sdkbindir}/javah \
 --slave %{_bindir}/javap                    javap                       %{sdkbindir}/javap \
 --slave %{_bindir}/jdb                      jdb                         %{sdkbindir}/jdb \
---slave %{_bindir}/keytool                  keytool                     %{sdkbindir}/gkeytool \
 --slave %{_bindir}/native2ascii             native2ascii                %{sdkbindir}/native2ascii \
 --slave %{_bindir}/rmic                     rmic                        %{sdkbindir}/rmic \
 --slave %{_bindir}/serialver                serialver                   %{sdkbindir}/serialver
