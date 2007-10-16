@@ -64,6 +64,7 @@ BuildRequires:  bcel
 BuildRequires:  chrpath
 BuildRequires:  classpath-devel
 BuildRequires:  esound-devel
+BuildRequires:  fastjar
 BuildRequires:  gmp-devel
 BuildRequires:  libjpeg-devel
 %if !%{with_ecj}
@@ -107,8 +108,6 @@ Provides:       %{javaname}-devel = 0:%{javaversion}-%{release}
 %if !%{with_ecj}
 Requires:       jikes > 0:1.22
 %else
-# FIXME: javac script should use ecj
-Requires:       jikes
 Requires:       ecj
 %endif
 Requires:       %{origin} = %{epoch}:%{originver}-%{release}
@@ -135,11 +134,6 @@ You'll also need to install kaffe package.
 %patch2 -p1 -b .generics
 
 %{__perl} -pi -e 's|\@JIKESPROG\@|%{_bindir}/ecj|' kaffe/scripts/compat/javac.in
-
-%ifarch x86_64
-%{__perl} -pi -e 's/MIN_VALUE =.*/MIN_VALUE = longBitsToDouble(0x1L);/' \
-   libraries/javalib/external/classpath/java/lang/Double.java 
-%endif
 
 %build
 %ifarch %{ix86}
