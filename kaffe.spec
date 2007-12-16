@@ -10,7 +10,7 @@
 
 %define javaname        java-%{javaver}-%{origin}
 %define javaversion     %{javaver}.%{buildver}
-%define release         %mkrel 1
+%define release         %mkrel 2
 
 %define toplevel_dir    j2sdk%{javaver}_%{buildver}
 %define sdklnk          java-%{javaver}-%{origin}
@@ -72,7 +72,7 @@ BuildRequires:  jikes > 0:1.22
 %else
 BuildRequires:  ecj
 %endif
-BuildRequires:  jpackage-utils >= 0:1.5
+BuildRequires:  java-rpmbuild >= 0:1.5
 BuildRequires:  gcc-java
 BuildRequires:  libungif-devel
 BuildRequires:  zip
