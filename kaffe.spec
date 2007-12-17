@@ -83,7 +83,6 @@ BuildRequires:  libglib2-devel
 BuildRequires:  libxtst-devel
 BuildRequires:  libGConf2-devel
 ExclusiveArch:  %{ix86} ppc x86_64 amd64 ia64
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 AutoReq:        no
 
 %description
