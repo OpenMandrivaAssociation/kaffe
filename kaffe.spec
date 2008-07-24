@@ -10,7 +10,7 @@
 
 %define javaname        java-%{javaver}-%{origin}
 %define javaversion     %{javaver}.%{buildver}
-%define release         %mkrel 2
+%define release         %mkrel 4
 
 %define toplevel_dir    j2sdk%{javaver}_%{buildver}
 %define sdklnk          java-%{javaver}-%{origin}
@@ -37,7 +37,7 @@
 
 Name:           kaffe
 Version:        %{originver}
-Release:        %mkrel 1
+Release:        %mkrel 3
 Epoch:          0
 Summary:        Free virtual machine for running Java(TM) code
 License:        GPL
