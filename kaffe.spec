@@ -10,7 +10,7 @@
 
 %define javaname        java-%{javaver}-%{origin}
 %define javaversion     %{javaver}.%{buildver}
-%define release         %mkrel 4
+%define release         %mkrel 5
 
 %define toplevel_dir    j2sdk%{javaver}_%{buildver}
 %define sdklnk          java-%{javaver}-%{origin}
