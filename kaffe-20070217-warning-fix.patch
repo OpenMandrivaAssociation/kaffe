@@ -1,0 +1,19 @@
+--- kaffe/libraries/javalib/external/classpath/native/jni/native-lib/cpproc.c.bak	2007-02-17 18:37:59.792209464 +0100
++++ kaffe/libraries/javalib/external/classpath/native/jni/native-lib/cpproc.c	2007-02-17 18:38:21.771868048 +0100
+@@ -59,6 +59,7 @@
+   int local_fds[6];
+   int i;
+   pid_t pid;
++  int ret;
+ 
+   for (i = 0; i < (pipe_count * 2); i += 2)
+     {
+@@ -86,7 +87,7 @@
+ 
+       close_all_fds(local_fds, pipe_count * 2);
+ 
+-      chdir(wd);
++      ret = chdir(wd);
+       if (newEnviron == NULL)
+ 	execvp(commandLine[0], commandLine);
+       else

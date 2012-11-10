@@ -1,0 +1,206 @@
+--- kaffe/libraries/javalib/vmspecific/java/lang/ref/Reference.java.bak	2007-01-04 00:02:34.000000000 +0100
++++ kaffe/libraries/javalib/vmspecific/java/lang/ref/Reference.java	2007-02-18 01:19:26.168523688 +0100
+@@ -70,13 +70,13 @@
+  * @author Jochen Hoenicke
+  * @see java.util.WeakHashMap
+  */
+-public abstract class Reference
++public abstract class Reference<T>
+ {
+   /**
+    * The underlying object.  This field is handled in a special way by
+    * the garbage collector.
+    */
+-  Object referent;
++  T referent;
+ 
+   /**
+    * The queue this reference is registered on. This is null, if this
+@@ -107,7 +107,7 @@
+    */
+   static Object lock = new Object();
+ 
+-  private native void create(Object ref);
++  private native void create(T ref);
+ 
+   /**
+    * Creates a new reference that is not registered to any queue.
+@@ -115,7 +115,7 @@
+    * class in a different package.  
+    * @param ref the object we refer to.
+    */
+-  Reference(Object ref)
++  Reference(T ref)
+   {
+     referent = ref;
+     create(ref);
+@@ -129,7 +129,7 @@
+    * @param q the reference queue to register on.
+    * @exception NullPointerException if q is null.
+    */
+-  Reference(Object ref, ReferenceQueue q)
++  Reference(T ref, ReferenceQueue q)
+   {
+     if (q == null)
+       throw new NullPointerException();
+@@ -143,7 +143,7 @@
+    * @return the object, this reference refers to, or null if the 
+    * reference was cleared.
+    */
+-  public Object get()
++  public T get()
+   {
+     synchronized (lock)
+       {
+--- kaffe/libraries/javalib/vmspecific/java/lang/reflect/Constructor.java.bak	2006-05-22 17:22:55.000000000 +0200
++++ kaffe/libraries/javalib/vmspecific/java/lang/reflect/Constructor.java	2007-02-18 01:31:10.876391808 +0100
+@@ -43,6 +43,7 @@
+ import gnu.java.lang.reflect.MethodSignatureParser;
+ 
+ import java.util.Arrays;
++import java.util.ArrayList;
+ 
+ /**
+  * The Constructor class represents a constructor of a class. It also allows
+@@ -77,11 +78,11 @@
+  * @since 1.1
+  * @status updated to 1.4
+  */
+-public final class Constructor
++public final class Constructor<T>
+   extends AccessibleObject
+   implements GenericDeclaration, Member
+ {
+-  private Class clazz;
++  private Class<T> clazz;
+   private int slot;
+   private Class[] parameterTypes;
+   private Class[] exceptionTypes;
+@@ -92,7 +93,7 @@
+   /**
+    * This class is uninstantiable except from native code.
+    */
+-  private Constructor(Class declaringClass, int slot)
++  private Constructor(Class<T> declaringClass, int slot)
+   {
+     this.clazz = declaringClass;
+     this.slot = slot;
+@@ -106,7 +107,7 @@
+    * Gets the class that declared this constructor.
+    * @return the class that declared this member
+    */
+-  public Class getDeclaringClass()
++  public Class<T> getDeclaringClass()
+   {
+     return clazz;
+   }
+@@ -344,11 +345,12 @@
+    * @since 1.5
+    */
+   /* FIXME[GENERICS]: Add <Constructor<T>> */
+-  public TypeVariable[] getTypeParameters()
++  @SuppressWarnings ("unchecked")
++  public TypeVariable<Constructor<T>>[] getTypeParameters()
+   {
+     String sig = getSignature();
+     if (sig == null)
+-      return new TypeVariable[0];
++      return (TypeVariable<Constructor<T>>[])new ArrayList<TypeVariable<Constructor<T>>>().toArray();
+     MethodSignatureParser p = new MethodSignatureParser(this, sig);
+     return p.getTypeParameters();
+   }
+--- kaffe/kaffe/kaffe/version.h.bak	2005-05-18 22:33:52.000000000 +0200
++++ kaffe/kaffe/kaffe/version.h	2007-02-18 02:42:44.664636776 +0100
+@@ -10,7 +10,7 @@
+ #ifndef KAFFE_KAFFE_VERSION_H
+ #define KAFFE_KAFFE_VERSION_H
+ 
+-#define JAVA_VERSION_STRING	"1.4"
++#define JAVA_VERSION_STRING	"1.5"
+ 
+ /*
+  * Print copyright notice and simple version info (Java version, 
+--- kaffe/kaffe/kaffe/version.c.bak	2006-09-02 21:05:50.000000000 +0200
++++ kaffe/kaffe/kaffe/version.c	2007-02-18 02:42:30.371809616 +0100
+@@ -40,7 +40,7 @@
+ {
+ 	if (!versionfd)
+ 		versionfd = stderr;
+-	fprintf(versionfd, "java full version \"kaffe-1.4.2\"\n\n");
++	fprintf(versionfd, "java full version \"kaffe-1.5.0\"\n\n");
+ 	fprintf(versionfd, "%s VM \"%s\"\n\n", PACKAGE, PACKAGE_VERSION);
+ 	fprintf(versionfd, "%s", 
+ 		       _("Copyright (c) 1996-2006 Kaffe.org project contributors (please see\n"
+--- kaffe/libraries/javalib/awt-implementations/kaffe/java/awt/Component.java.bak	2006-12-03 11:29:50.000000000 +0100
++++ kaffe/libraries/javalib/awt-implementations/kaffe/java/awt/Component.java	2007-02-18 02:38:45.807948512 +0100
+@@ -1057,29 +1057,30 @@
+    * @see #getPropertyChangeListeners()
+    * @since 1.3
+    */
+-  public EventListener[] getListeners(Class listenerType)
++ public <T extends EventListener>
++ T[] getListeners(Class<T> listenerType)
+   {
+     if (listenerType == ComponentListener.class)
+-      return getComponentListeners();
++      return (T[])getComponentListeners();
+     if (listenerType == FocusListener.class)
+-      return getFocusListeners();
++      return (T[])getFocusListeners();
+     if (listenerType == HierarchyListener.class)
+-      return getHierarchyListeners();
++      return (T[])getHierarchyListeners();
+     if (listenerType == HierarchyBoundsListener.class)
+-      return getHierarchyBoundsListeners();
++      return (T[])getHierarchyBoundsListeners();
+     if (listenerType == KeyListener.class)
+-      return getKeyListeners();
++      return (T[])getKeyListeners();
+     if (listenerType == MouseListener.class)
+-      return getMouseListeners();
++      return (T[])getMouseListeners();
+     if (listenerType == MouseMotionListener.class)
+-      return getMouseMotionListeners();
++      return (T[])getMouseMotionListeners();
+     if (listenerType == MouseWheelListener.class)
+-      return getMouseWheelListeners();
++      return (T[])getMouseWheelListeners();
+     if (listenerType == InputMethodListener.class)
+-      return getInputMethodListeners();
++      return (T[])getInputMethodListeners();
+     if (listenerType == PropertyChangeListener.class)
+-      return getPropertyChangeListeners();
+-    return (EventListener[]) Array.newInstance(listenerType, 0);
++      return (T[])getPropertyChangeListeners();
++    return (T[]) Array.newInstance(listenerType, 0);
+   }
+ 
+ 
+--- kaffe/libraries/javalib/awt-implementations/kaffe/java/awt/Toolkit.java.bak	2006-03-31 00:14:11.000000000 +0200
++++ kaffe/libraries/javalib/awt-implementations/kaffe/java/awt/Toolkit.java	2007-02-18 03:13:49.954069680 +0100
+@@ -188,6 +188,10 @@
+ 	return new Image( imagedata, imageoffset, imagelength);
+ }
+ 
++public Image createImage ( URL url ) {
++	return new Image( url);
++}
++
+ static void createNative ( Component c ) {
+ 	WMEvent e = null;
+ 
+--- kaffe/libraries/javalib/awt-implementations/kaffe/java/awt/Frame.java.bak	2006-05-12 16:38:38.000000000 +0200
++++ kaffe/libraries/javalib/awt-implementations/kaffe/java/awt/Frame.java	2007-02-18 03:44:29.797370984 +0100
+@@ -39,6 +39,12 @@
+ 	final public static int W_RESIZE_CURSOR = Cursor.W_RESIZE_CURSOR;
+ 	final public static int MOVE_CURSOR = Cursor.MOVE_CURSOR;
+ 
++	final public static int NORMAL = 0;
++	final public static int ICONIFIED = 1;
++	final public static int MAXIMIZED_HORIZ = 2;
++	final public static int MAXIMIZED_VERT = 4;
++	final public static int MAXIMIZED_BOTH = 6;
++
+ static {
+ 	// these are just the guesses (to be overwritten by a subsequent
+ 	// setFrameInsets() from the native layer)
