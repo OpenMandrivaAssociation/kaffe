@@ -42,7 +42,7 @@ Epoch:          0
 Summary:        Free virtual machine for running Java(TM) code
 License:        GPL
 Group:          Development/Java
-Url:            http://www.kaffe.org/
+Url:            https://www.kaffe.org/
 Source0:        ftp://ftp.kaffe.org/pub/kaffe/v1.1.x-development/kaffe-%{version}.tar.bz2
 Source1:        ftp://ftp.kaffe.org/pub/kaffe/v1.1.x-development/kaffe-%{version}.tar.bz2.sig
 Patch1:         kaffe-20070217-warning-fix.patch
