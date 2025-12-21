@@ -59,6 +59,7 @@ Provides:       jndi = %{epoch}:%{javaversion}, jndi-ldap = %{epoch}:%{javaversi
 Provides:       jsse = %{epoch}:%{javaversion}
 Provides:       jce = %{epoch}:%{javaversion}
 Provides:       jdbc-stdext = %{epoch}:3.0, jdbc-stdext = %{epoch}:%{javaversion}
+BuildRequires:	make
 BuildRequires:  alsa-lib-devel
 BuildRequires:  bcel
 BuildRequires:  chrpath
